@@ -47,7 +47,7 @@ const SearchContainer = styled.div`
 
 export const Searchbar = ({currLocation})=> {
     const [city, setCity] = useState("")
-  
+    const [currWeather,setCurrWeather] = useState(null)
  //function to get the current weather for given location
 const getCurrentWeather = (location) =>{
     console.log(location)
@@ -55,6 +55,7 @@ const getCurrentWeather = (location) =>{
     axios.get(link)
          .then(res=>{
          // console.log(res.data)
+         setCurrWeather(res.data)
          setCity(res.data.name)
         })
          .catch(err=>console.log(err))
@@ -62,35 +63,30 @@ const getCurrentWeather = (location) =>{
 }
 
     useEffect( ()=>{
-        if(!city){
+        if(!currWeather){
          getCurrentWeather(currLocation);
       
         }else{
-            console.log(city)
+            filterCities(city.toLowerCase())
         }
     },[city])
 
 
 
-function filterCities (cities){
-    let filteredCities = cities.filter(data=>{
-        let poss = true;
-        for(let i = 0; i<city.length; i++){
-            if(city.toLowerCase()[i]!=data.cityName.toLowerCase()[i]){
-                poss = false;
-                break;
-            }
-        }
-        if(poss) return data
-     })
-     console.log(filteredCities)
+function filterCities (city){
+   
+   console.log(city)
 }
 
+
+const handleChange = (e)=>{
+    setCity(e.target.value);
+}
     return (
         <div>
             <SearchContainer className="searchContainer">
                 <LocationPin><img src="/img/pin.png" /></LocationPin>
-                <input type="text" placeholder="Search" onChange={e => setCity( e.target.value)} value={city} />
+                <input type="text" placeholder="Search" onChange={handleChange} value={city} />
                 <Button ><img src="/img/search.png" /></Button>
             </SearchContainer>
             <section id="search-cities">
