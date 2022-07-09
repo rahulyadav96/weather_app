@@ -1,40 +1,20 @@
 import './App.css';
 import { Searchbar } from './components/Searchbar';
-import {useState,useEffect} from "react";
-import axios from "axios";
+import {useState,useEffect} from "react"
 function App() {
- const [location,setLocation] = useState({
-   lat:"",
-   long:""
- });
+  const [location,setLocation] = useState(null)
 
- const [currCity,setCurrCity] = useState("")
-
-  useEffect(()=>{
-    if(location.lat == "" || location.long == ""){
-      getLocation();
-    }else{
-
-      axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.long}&appid=2141e98491d6c0500256dd9b58a5c440`)
-       .then(res=>{
-        setCurrCity(res.data.name)
-        console.log(res.data)
-      })
-       .catch(err=>console.log(err))
-    }
-  
-  },[location])
-
-  const getLocation = ()=>{
+    // function to get the current location
+function getLocation(){
+   
     if ("geolocation" in navigator) {
       // check if geolocation is supported/enabled on current browser
       navigator.geolocation.getCurrentPosition(
        function success(position) {
          // for when getting location is a success
          console.log('latitude', position.coords.latitude, 'longitude', position.coords.longitude);
-         setLocation({...location,lat:position.coords.latitude,long:position.coords.longitude})
-         //return [position.coords.latitude,position.coords.longitude]
-         
+        let currLocation = {latitude:position.coords.latitude,longitude:position.coords.longitude}
+        setLocation(currLocation); 
        },
       function error(error_message) {
         // for when getting location results in an error
@@ -46,9 +26,17 @@ function App() {
       console.log('geolocation is not enabled on this browser')
     }
   }
+
+  useEffect(()=>{
+    getLocation();
+  },[])
   return (
-    <div className="App">
-      <Searchbar currentCity={currCity} />
+    <div className="App">{
+      
+      location ? <Searchbar currLocation={location} /> : <div></div>
+    
+    }
+     
     </div>
   );
 }
