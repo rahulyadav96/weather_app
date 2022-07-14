@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { WeatherDetails } from "./WeatherDetails";
 
 export const OneWeakWeather = ({ coords }) => {
     const [forcast, setForcast] = useState(null);
@@ -33,6 +34,6 @@ export const OneWeakWeather = ({ coords }) => {
                     <div className="weather-box"></div>
             </div>
         </div>
-        
+        <WeatherDetails weather={show} />
   </>;
 };
